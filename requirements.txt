@@ -1,0 +1,9 @@
+google-generativeai
+langchain
+sentence-transformers
+faiss-cpu
+gunicorn
+flask
+pandas
+numpy
+

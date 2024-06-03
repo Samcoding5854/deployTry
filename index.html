@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <style>
+        /* CSS styles for the clickable text */
+        #runScriptLink {
+            display: inline-block;
+            padding: 10px 20px;
+            font-size: 18px;
+            text-decoration: none; /* Remove underline */
+            border-radius: 5px;
+            transition: background-color 0.3s;
+        }
+
+        #trendsContainer {
+            margin-top: 20px;
+        }
+
+        #trendingTitle {
+            font-size: 20px;
+            font-weight: bold;
+        }
+    </style>
+</head>
+<body>
+    <!-- Clickable text link to run the script -->
+    <a id="runScriptLink" href="#">Click here to run the script</a>
+    
+    <h2 id="trendingTitle"></h2>
+    <div id="trendsContainer"></div>
+
+    <script>
+        document.getElementById('runScriptLink').addEventListener('click', (event) => {
+            event.preventDefault(); // Prevent default link behavior (page reload)
+            fetch('http://127.0.0.1:5000/hello/World')
+                .then(response => response.json())
+                .then(data => {
+                    const trendsContainer = document.getElementById('trendsContainer');
+                    trendsContainer.innerHTML = ''; // Clear previous trends
+
+                    const trendsList = document.createElement('ul'); // Create an unordered list
+                    data.forEach(trend => {
+                        const trendItem = document.createElement('li'); // Create a list item for each trend
+                        trendItem.textContent = trend;
+                        trendItem.style.fontSize = '18px'; // Adjust font size as desired
+                        trendItem.style.marginBottom = '10px'; // Add some margin between trends
+                        trendsList.appendChild(trendItem); // Append the trend item to the list
+                    });
+                    trendsContainer.appendChild(trendsList); // Append the list to the trends container
+
+                    // Display current date and time
+                    const currentDate = new Date();
+                    const formattedDate = currentDate.toLocaleString();
+                    document.getElementById('trendingTitle').textContent = `These are the most happening topics as on ${formattedDate}`;
+                })
+                .catch(error => console.error('Error:', error));
+        });
+    </script>
+</body>
+</html>

@@ -9,7 +9,7 @@ class Running(webdriver.Chrome):
     def __init__(self, teardown=False):
         self.teardown = teardown
         super(Running, self).__init__()
-        self.implicitly_wait(5)
+        self.implicitly_wait(10)
         self.maximize_window()
 
     def __exit__(self, exc_type, exc_val, exc_tb):
@@ -20,6 +20,11 @@ class Running(webdriver.Chrome):
         self.get(const.BASE_URL)
 
     def SignIn(self):
+
+        
+        cross_button = self.find_element(By.XPATH, '//button[@data-testid="xMigrationBottomBar"]')
+        print("Clicked on the cross button")
+        cross_button.click()
 
         button = self.find_element(By.XPATH, '//a[@data-testid="loginButton"]')
         print("Clicked on the button")

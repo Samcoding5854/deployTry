@@ -1,5 +1,5 @@
 BASE_URL = "https://x.com/"
 
-USERNAME = ""
+USERNAME = "anandiket"
 
-PASSWORD = ""
+PASSWORD = "LizzyBennet"

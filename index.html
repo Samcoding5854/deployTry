@@ -10,7 +10,7 @@
             display: inline-block;
             padding: 10px 20px;
             font-size: 18px;
-            text-decoration: none; /* Remove underline */
+            text-decoration: none;
             border-radius: 5px;
             transition: background-color 0.3s;
         }
@@ -23,6 +23,19 @@
             font-size: 20px;
             font-weight: bold;
         }
+
+        #jsonContainer {
+            margin-top: 20px;
+            font-family: monospace;
+            white-space: pre-wrap;
+            background-color: #f0f0f0;
+            padding: 10px;
+            border-radius: 5px;
+        }
+
+        #runScriptLink:hover {
+            background-color: #ddd;
+        }
     </style>
 </head>
 <body>
@@ -31,33 +44,57 @@
     
     <h2 id="trendingTitle"></h2>
     <div id="trendsContainer"></div>
+    <div id="ipAddress"></div>
+    <div id="jsonContainer"></div>
+
 
     <script>
-        document.getElementById('runScriptLink').addEventListener('click', (event) => {
+            document.getElementById('runScriptLink').addEventListener('click', (event) => {
             event.preventDefault(); // Prevent default link behavior (page reload)
-            fetch('http://127.0.0.1:5000/hello/World')
+            fetch('/run_script')
                 .then(response => response.json())
                 .then(data => {
                     const trendsContainer = document.getElementById('trendsContainer');
                     trendsContainer.innerHTML = ''; // Clear previous trends
 
                     const trendsList = document.createElement('ul'); // Create an unordered list
-                    data.forEach(trend => {
-                        const trendItem = document.createElement('li'); // Create a list item for each trend
-                        trendItem.textContent = trend;
-                        trendItem.style.fontSize = '18px'; // Adjust font size as desired
-                        trendItem.style.marginBottom = '10px'; // Add some margin between trends
-                        trendsList.appendChild(trendItem); // Append the trend item to the list
-                    });
-                    trendsContainer.appendChild(trendsList); // Append the list to the trends container
 
-                    // Display current date and time
-                    const currentDate = new Date();
-                    const formattedDate = currentDate.toLocaleString();
-                    document.getElementById('trendingTitle').textContent = `These are the most happening topics as on ${formattedDate}`;
+                    if (data && data.trends > 0) {
+                        // Add the trends to the list
+                        for (let i = 0; i < data.trends.length; i++) {
+                            const trendItem = document.createElement('li');
+                            trendItem.textContent = data.trends[i];
+                            trendItem.style.fontSize = '18px'; // Adjust font size as desired
+                            trendItem.style.marginBottom = '10px'; // Add some margin between trends
+                            trendsList.appendChild(trendItem);
+                        }
+
+                        // Append the list to the trends container
+                        trendsContainer.appendChild(trendsList);
+
+                        // Display current date and time
+                        const currentDate = new Date();
+                        const formattedDate = currentDate.toLocaleString();
+                        document.getElementById('trendingTitle').textContent = `These are the most happening topics as on ${formattedDate}`;
+
+                        // Display IP address
+                        document.getElementById('ipAddress').textContent = `The IP address used for this query was ${data.ip}`;
+
+                        // Display JSON extract from MongoDB
+                        const jsonContainer = document.getElementById('jsonContainer');
+                        jsonContainer.textContent = `Here’s a JSON extract of this record from the MongoDB:\n${JSON.stringify(data.mongoRecord, null, 2)}`;
+                        
+                        // Show the "run the query again" link
+                        document.getElementById('runScriptLinkAgain').style.display = 'inline-block';
+                   } else {
+                       document.getElementById('trendingTitle').textContent = `No trends found.`;
+                   }
                 })
                 .catch(error => console.error('Error:', error));
         });
+
+       
+
     </script>
 </body>
 </html>
